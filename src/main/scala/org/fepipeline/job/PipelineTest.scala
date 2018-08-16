@@ -23,9 +23,8 @@ object PipelineTest {
       .enableHiveSupport()
       .getOrCreate()
 
-    val outPath = ""
-
-    val rawSample = spark.table("zp_raw_sample")
+    val outPath = args(0)
+    val rawSample = spark.table("raw_sample")
 
     val colNameIndexes = Array("age"-> 1, "score" -> 2, "name_len"-> 3, "age_score_titlelen" -> 4,
       "pv" -> 5, "item_ctr" -> 6, "name_len_disc" -> 7, "item_ctr_disc" -> 8)
