@@ -1,2 +1,7 @@
 *.class
 *.log
+*.iml
+.DS_Store
+.idea/*
+metastore_db/*
+target/*
