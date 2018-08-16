@@ -1,8 +1,6 @@
 # FEpipeline
 A easy to get start, scalable, distributed feature engineering library based on Spark.
 
-[TOC]
-
 ## FEpipeline Framework
 ![](https://i.loli.net/2018/08/17/5b75bc2363823.jpg)
 
@@ -56,6 +54,6 @@ val infoGain = informationEvaluator.evaluate
 * My blog website: www.iyao.ren.
 * Follow me on WeChat:
 
-![-w200](https://i.loli.net/2018/08/17/5b75bc2367e4b.jpg)
+![-w50](https://i.loli.net/2018/08/17/5b75bc2367e4b.jpg)
 
 
