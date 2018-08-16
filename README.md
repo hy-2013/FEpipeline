@@ -54,6 +54,8 @@ val infoGain = informationEvaluator.evaluate
 * My blog website: www.iyao.ren.
 * Follow me on WeChat:
 
-![-w50](https://i.loli.net/2018/08/17/5b75bc2367e4b.jpg)
+<div>
+<img src="https://i.loli.net/2018/08/17/5b75bc2367e4b.jpg" width = "200" height = "200" alt=""  align=center />
+</div>
 
 
