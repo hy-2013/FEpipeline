@@ -1,8 +1,9 @@
 # FEpipeline
-A easy to get start, scalable, distributed feature engineering library based on Spark.
+A easy to get start, scalable, distributed feature engineering framework based on Spark.
 
 ## FEpipeline Framework
 ![](https://i.loli.net/2018/08/17/5b75bc2363823.jpg)
+The project refers to the architectural design of Spark ML and Keras and enable the feature engineering pipeline to abstract into modules as SubSampler, Convertor, Assembler, Stater, Discretizer, OutputFormater and Evaluator. These modules or some modules can be input into a pipeline in arbitrary arrangement according to your customized requirements, and obtained output format according to the predetermined. Meanwhile, you can evaluate and select some features depend on your requirements.
 
 ## Modules
 * SubSampler: Subsample samples or raw samples as defined strategy (strategies), such as OneEqualOneSubsampler, ManyContainOneSubsampler, RandomSubsampler, SkipAboveSubsampler, UserSubsampler, NegativeSubsampler etc.
@@ -26,9 +27,11 @@ val spark = SparkSession
 val outPath = args(0)
 val rawSample = spark.table("raw_sample")
 
+// Define the map between column name and feature index for FtrlOutputFormater.
 val colNameIndexes = Array("age"-> 1, "score" -> 2, "name_len"-> 3, "age_score_titlelen" -> 4,
   "pv" -> 5, "item_ctr" -> 6, "name_len_disc" -> 7, "item_ctr_disc" -> 8)
 
+// Define the feature pipeline.
 val pipeline = Pipeline(Array(
   OneEqualOneSubsampler("app", "platform"),
   TitleLenConvertor("title", "name_len"),
@@ -44,6 +47,7 @@ val sample = pipelineModel.transform(rawSample)
 
 sample.write.save(outPath)
 
+// Feature evaluation
 val statisticsEvaluator = StatisticsEvaluator(rawSample, "age", "coverage")
 val coverage = statisticsEvaluator.evaluate
 val informationEvaluator = InformationEvaluator(rawSample, "label", "age", "infoGain")
@@ -57,5 +61,3 @@ val infoGain = informationEvaluator.evaluate
 <div>
 <img src="https://i.loli.net/2018/08/17/5b75bc2367e4b.jpg" width = "200" height = "200" alt=""  align=center />
 </div>
-
-
