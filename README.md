@@ -8,11 +8,11 @@ The project refers to the architectural design of Spark ML and Keras and enable 
 ## Modules
 * SubSampler: Subsample samples or raw samples as defined strategy (strategies), such as OneEqualOneSubsampler, ManyContainOneSubsampler, RandomSubsampler, SkipAboveSubsampler, UserSubsampler, NegativeSubsampler etc.
 * Convertor: Convert String or Array or any other non-numeric feature to numeric feature, even do some normalized conversion. Such as TitleLenConvertor, WelCntConvertor etc.
-* Assembler: Assemble  features to a feature. It can be used to make cross features manually.
-* Stater: Get feature statistics attribute value by Aggregater, CXRStater (ctr/cvr), BayesianSmoothing etc.
+* Assembler: Assemble some features to a feature. It can be used to make cross features manually.
+* Stater: Get feature statistics attribute value by Aggregater (e.g. pv), CXRStater (e.g. ctr/cvr), BayesianSmoothing etc.
 * Discretizer: Discretize feature by the same number in each field (SameNumDiscretizer), or by the evenly divided fields (EqualFieldDiscretizer) etc.
 * OutputFormater: Define output format such as FtrlOutputFormater, LibsvmOutputFormater etc.
-* Evaluator: It is be used to evaluate the feature degree of importance and divided to StatisticsEvaluator and InformationEvaluator. In StatisticsEvaluator, it has Coverage, Correlation, TopNFreq, Quantiles and Chi-square test etc. In InformationEvaluator, it has InfoGain, InfoGainRatio, InfoValue etc.
+* Evaluator: It is be used to evaluate the feature degree of importance and divided to StatisticsEvaluator and InformationEvaluator. In StatisticsEvaluator, it has Coverage, Correlation, TopNFreqValue, Quantiles and Chi-square test etc. In InformationEvaluator, it has InfoGain, InfoGainRatio, InfoValue etc.
 
 ## Code Snippet
 
@@ -20,7 +20,7 @@ The project refers to the architectural design of Spark ML and Keras and enable 
 val spark = SparkSession
   .builder()
   .master("local[8]")
-  .appName("[Huye] PipelineTest")
+  .appName("[Huye] FEpipelineExample")
   .enableHiveSupport()
   .getOrCreate()
 
@@ -28,18 +28,18 @@ val outPath = args(0)
 val rawSample = spark.table("raw_sample")
 
 // Define the map between column name and feature index for FtrlOutputFormater.
-val colNameIndexes = Array("age"-> 1, "score" -> 2, "name_len"-> 3, "age_score_titlelen" -> 4,
-  "pv" -> 5, "item_ctr" -> 6, "name_len_disc" -> 7, "item_ctr_disc" -> 8)
+val colNameIndexes = Array("age"-> 1, "score" -> 2, "title_len"-> 3, "age_score_titlelen" -> 4,
+  "pv" -> 5, "infoid_ctr" -> 6, "title_len_disc" -> 7, "infoid_ctr_disc" -> 8)
 
 // Define the feature pipeline.
 val pipeline = Pipeline(Array(
   OneEqualOneSubsampler("app", "platform"),
-  TitleLenConvertor("title", "name_len"),
-  Assembler(Array("age", "score", "name_len"), "age_score_titlelen"),
-  Aggregater("item", "pv"),
-  CXRStater("label", "item", "item_ctr"),
-  SameNumDiscretizer("name_len", "name_len_disc", 5),
-  SameNumDiscretizer("item_ctr", "item_ctr_disc", 10),
+  TitleLenConvertor("title", "title_len"),
+  Assembler(Array("age", "score", "title_len"), "age_score_titlelen"),
+  Aggregater("infoid", "pv"),
+  CXRStater("label", "infoid", "infoid_ctr"),
+  SameNumDiscretizer("title_len", "title_len_disc", 5),
+  SameNumDiscretizer("infoid_ctr", "infoid_ctr_disc", 10),
   FtrlOutputFormater(colNameIndexes, "sample")))
 
 val pipelineModel = pipeline.fit(rawSample)
@@ -61,3 +61,5 @@ val infoGain = informationEvaluator.evaluate
 <div>
 <img src="https://i.loli.net/2018/08/17/5b75bc2367e4b.jpg" width = "200" height = "200" alt=""  align=center />
 </div>
+
+

@@ -27,17 +27,17 @@ object FEpipelineExample {
     val rawSample = spark.table("raw_sample")
 
     // Define the map between column name and feature index for FtrlOutputFormater.
-    val colNameIndexes = Array("age"-> 1, "score" -> 2, "name_len"-> 3, "age_score_titlelen" -> 4,
-      "pv" -> 5, "infoid_ctr" -> 6, "name_len_disc" -> 7, "infoid_ctr_disc" -> 8)
+    val colNameIndexes = Array("age"-> 1, "score" -> 2, "title_len"-> 3, "age_score_titlelen" -> 4,
+      "pv" -> 5, "infoid_ctr" -> 6, "title_len_disc" -> 7, "infoid_ctr_disc" -> 8)
 
     // Define the feature pipeline.
     val pipeline = Pipeline(Array(
       OneEqualOneSubsampler("app", "platform"),
-      TitleLenConvertor("title", "name_len"),
-      Assembler(Array("age", "score", "name_len"), "age_score_titlelen"),
+      TitleLenConvertor("title", "title_len"),
+      Assembler(Array("age", "score", "title_len"), "age_score_titlelen"),
       Aggregater("infoid", "pv"),
       CXRStater("label", "infoid", "infoid_ctr"),
-      SameNumDiscretizer("name_len", "name_len_disc", 5),
+      SameNumDiscretizer("title_len", "title_len_disc", 5),
       SameNumDiscretizer("infoid_ctr", "infoid_ctr_disc", 10),
       FtrlOutputFormater(colNameIndexes, "sample")))
 
